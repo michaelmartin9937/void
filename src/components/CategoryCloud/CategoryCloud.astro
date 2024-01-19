@@ -1,0 +1,30 @@
+---
+// utils
+import { getAllPosts, countItems, sortByValue } from "@js/blogUtils";
+import { categorify, humanize } from "@js/textUtils";
+
+const posts = await getAllPosts();
+const allCategories = posts.map((post) => post.data.categories).flat();
+const countedCategories = countItems(allCategories);
+const processedCategories = sortByValue(countedCategories);
+
+interface Props {
+  showCount?: boolean;
+}
+
+const { showCount = false } = Astro.props as Props;
+---
+
+<div class="flex flex-wrap gap-3">
+  {
+    processedCategories.map(([category, count]) => (
+      <a
+        href={`/categories/${category}/`}
+        class="button button--outline px-3 py-1"
+      >
+        {humanize(category)}
+        {showCount && <span class="text-xs opacity-70">({count})</span>}
+      </a>
+    ))
+  }
+</div>

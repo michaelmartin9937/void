@@ -1,0 +1,19 @@
+---
+// layout
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+// components
+import CategoryCloud from "@components/CategoryCloud/CategoryCloud.astro";
+---
+
+<BaseLayout
+  title="Recent Blog Posts"
+  description="Recent Blog Posts Description"
+>
+  <div class="container pt-36 md:pt-44">
+    <h1 class="h1">Categories</h1>
+    <div class="mt-10">
+      <CategoryCloud showCount={false} />
+    </div>
+  </div>
+</BaseLayout>

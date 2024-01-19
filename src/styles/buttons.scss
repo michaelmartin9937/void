@@ -1,0 +1,82 @@
+/* buttons, 4 types "filled", "outline", "ghost", "arrow" */
+.button {
+  @apply flex items-center justify-center gap-1 rounded-full px-5 py-2 font-medium transition-colors;
+  @apply focus:outline-none focus:outline-transparent focus:ring-offset-base-200 dark:focus:ring-offset-base-800;
+  @apply disabled:pointer-events-none;
+}
+
+.button--primary {
+  @apply relative bg-primary-600 text-base-50;
+  @apply hover:bg-primary-700;
+  @apply focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2;
+
+  // Rotating light effect on hover. not currently not supported in firefox, but it won't cause any problems.
+  &::before {
+    content: "";
+    @apply invisible absolute -inset-0.5 -z-10 rounded-full hover:visible;
+    @apply rotating-lights--dark dark:rotating-lights--light;
+  }
+}
+
+// secondary and outline are the same in this case
+.button--secondary {
+  @apply border border-base-500 bg-base-200/50 dark:bg-base-800/50;
+  // @apply active:opacity-80;
+  @apply hover:border-primary-400;
+  @apply focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:focus-visible:ring-primary-400;
+}
+
+.button--outline {
+  @apply border border-base-500 bg-base-200/50 dark:bg-base-800/50;
+  // @apply active:opacity-80;
+  @apply hover:border-primary-400;
+  @apply focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:focus-visible:ring-primary-400;
+}
+
+.button--ghost {
+  // @apply active:opacity-80;
+  @apply hover:bg-base-200/50 hover:text-primary-600 dark:hover:bg-base-800/50 dark:hover:text-primary-400;
+  @apply focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:focus-visible:ring-primary-400;
+}
+
+// @property is not currently supported in Firefox. So you won't see the rotating light effect there.
+@property --r {
+  initial-value: 0deg;
+  inherits: false;
+  syntax: "<angle>";
+}
+
+.rotating-lights--light {
+  background: conic-gradient(
+    from var(--r),
+    transparent 0%,
+    white 15%,
+    transparent 20%,
+    transparent 50%,
+    white 65%,
+    transparent 70%
+  );
+  animation: rotating 3s linear infinite;
+}
+
+.rotating-lights--dark {
+  background: conic-gradient(
+    from var(--r),
+    transparent 0%,
+    #737373 15%,
+    transparent 20%,
+    transparent 50%,
+    #737373 65%,
+    transparent 70%
+  );
+  animation: rotating 3s linear infinite;
+}
+
+@keyframes rotating {
+  0% {
+    --r: 0deg;
+  }
+  100% {
+    --r: 360deg;
+  }
+}

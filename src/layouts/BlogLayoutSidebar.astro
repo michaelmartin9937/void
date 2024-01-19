@@ -1,0 +1,217 @@
+---
+import { type CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon";
+
+// for reading time estimate
+import { fromMarkdown } from "mdast-util-from-markdown";
+import { toString } from "mdast-util-to-string";
+import getReadingTime from "reading-time";
+
+// main layout
+import BaseLayout from "./BaseLayout.astro";
+
+// components
+import Category from "@components/Category/Category.astro";
+import Tag from "@components/Tag/Tag.astro";
+import Button from "@components/Button/Button.astro";
+import ShareButtons from "@components/ShareButtons/ShareButtons.astro";
+import TableOfContents from "@components/TableOfContents/TableOfContents.astro";
+import RelatedPosts from "@components/RelatedPosts/RelatedPosts.astro";
+
+// utils
+import { formatDate } from "@js/textUtils";
+import { getAllAuthorsData } from "@js/blogUtils";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+  headings: import("astro").MarkdownHeading[];
+}
+
+const { post, headings } = Astro.props as Props;
+const {
+  title,
+  description,
+  authors,
+  pubDate,
+  updatedDate,
+  heroImage,
+  categories,
+  tags,
+} = post.data;
+
+const authorsData = await getAllAuthorsData(authors);
+
+// get reading time estimate
+// replace all the "\n"s with spaces for proper reading time estimate
+const spacedMarkdown = post.body.replace(/\n/g, " ");
+const tree = fromMarkdown(spacedMarkdown);
+const markdownText = toString(tree);
+const readingTime = getReadingTime(markdownText);
+---
+
+<BaseLayout
+  type="blog"
+  title={title}
+  description={description}
+  heroImage={heroImage}
+  authorsData={authorsData}
+  postFrontmatter={post.data}
+>
+  <article class="min-w-full px-4 pt-36 md:pt-44">
+    <!-- Blog post info -->
+    <div class="mx-auto flex max-w-[800px] flex-col items-center">
+      <div class="flex w-full">
+        <div class="mr-auto max-w-2xl">
+          <!-- categories -->
+          <div class="flex w-full gap-3 md:text-lg">
+            {categories.map((category) => <Category category={category} />)}
+          </div>
+
+          <!-- title -->
+          <h1 class="h1 mt-4">{title}</h1>
+
+          <!-- description -->
+          <p class="mt-3 text-sm opacity-70 md:text-base/5">
+            {description}
+          </p>
+        </div>
+      </div>
+
+      <!-- blog post main image -->
+      <div class="mt-6 overflow-hidden">
+        <Image
+          src={heroImage}
+          alt={`Cover for ${title}`}
+          width={1600}
+          quality="high"
+          class="max-h-[40vh] object-cover sm:max-h-[50vh] md:max-h-[60vh] lg:max-h-[50vh]"
+          loading="eager"
+          format="webp"
+          transition:name={`blog-image-${post.slug}`}
+        />
+      </div>
+
+      <!-- after blog post hero image -->
+      <div
+        class="mt-4 flex w-full flex-wrap items-center justify-between gap-4"
+      >
+        <div class="flex flex-wrap gap-4">
+          <!-- author info -->
+          {
+            authorsData.map((authorData) => (
+              <div class="mb-auto flex">
+                <figure>
+                  <Image
+                    src={authorData.data.avatar}
+                    alt={`${authorData.data.name} avatar`}
+                    width={100}
+                    quality="high"
+                    class="h-7 w-7 rounded-full object-cover"
+                  />
+                </figure>
+                <div class="my-auto ml-2">
+                  <a
+                    class="opacity-80 transition hover:text-primary-600 dark:hover:text-primary-400"
+                    href={authorData.data.authorLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {authorData.data.name}
+                  </a>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+        <div class="flex gap-4">
+          <!-- pubDate -->
+          <div class="flex items-center opacity-80">
+            <Icon name="tabler:calendar-event" class="mr-2 h-5 w-5" />
+            <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+          </div>
+
+          <!-- Reading time -->
+          <div class="flex items-center opacity-80">
+            <Icon name="tabler:clock" class="mr-2 h-5 w-5" />
+            <p class="flex">{`${readingTime.text}`}</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="mt-4 w-full border-t-2 border-base-300 dark:border-base-600" />
+    </div>
+
+    <!-- article content -->
+    <div class="mt-10 w-full">
+      <div class="mx-auto max-w-[800px] gap-8 md:flex xl:max-w-5xl">
+        <div
+          class="text-base-content text-base md:min-w-[400px] lg:max-w-2xl xl:ml-28"
+        >
+          {
+            updatedDate && (
+              <div class="mb-6 italic">
+                <time datetime={updatedDate.toISOString()}>
+                  Updated: {formatDate(updatedDate)}
+                </time>
+              </div>
+            )
+          }
+          <section id="blog-post-content" class="prose mx-auto md:text-lg">
+            <slot />
+          </section>
+
+          <!-- Tags -->
+          <div class="mt-8 md:text-lg">
+            <div class="flex flex-wrap items-center gap-2">
+              <Icon name="tabler:tag" class="h-5 w-5" />
+              {tags.map((tag) => <Tag tag={tag} />)}
+            </div>
+          </div>
+
+          <!-- end of post, extra stuff (like share buttons) here -->
+          <hr
+            class="my-4 w-full border-t-2 border-base-300 dark:border-base-600"
+          />
+          <div class="flex flex-col">
+            <h3 class="text-xl font-medium">Share this post!</h3>
+            <!-- socials -->
+            <div class="mt-2 flex w-full flex-wrap justify-center gap-2">
+              <ShareButtons
+                title={title}
+                url={Astro.url}
+                link={true}
+                class="flex-auto border border-base-400 bg-transparent hover:text-base-50 dark:border-base-600"
+              />
+            </div>
+          </div>
+
+          <!-- button to go back to all posts -->
+          <div class="mt-8 flex">
+            <Button variant="outline" href="/blog/" arrow="left">
+              Back to all posts
+            </Button>
+          </div>
+
+          <!-- related posts -->
+          <aside class="mt-8">
+            <h3 class="text-xl font-medium">Related Posts</h3>
+            <div class="mt-1 grid gap-4 sm:grid-cols-2">
+              <RelatedPosts post={post} />
+            </div>
+          </aside>
+        </div>
+
+        <!-- Table of Contents sidebar -->
+        <aside class="hidden min-w-[200px] max-w-xs md:block">
+          <div class="sticky top-20">
+            <div class="h-[calc(100vh-6rem)] overflow-y-auto">
+              <TableOfContents headings={headings} levels={3} />
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

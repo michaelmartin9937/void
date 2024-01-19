@@ -1,0 +1,66 @@
+---
+/**
+ * * Hero with side overlayed text
+ * If you change the text, you'll need to play with the sizing and positioning of it
+ */
+
+// components
+import NewsletterForm from "@components/Forms/NewsletterForm.astro";
+
+const text = "THE VOID";
+---
+
+<section
+  id="heroSideText"
+  class="container mb-20 grid items-center gap-12 pt-36 md:grid-cols-2 md:gap-6 md:pb-32 md:pt-52"
+>
+  <div
+    class="relative h-28 whitespace-nowrap text-center text-5xl xs:h-40 xs:text-7xl sm:h-[13.5rem] sm:text-8xl md:h-40 md:text-left md:text-7xl lg:h-[14.5rem] lg:text-[6.5rem]"
+  >
+    <!-- top text -->
+    <div
+      class="absolute top-0 flex w-full flex-nowrap justify-center font-bold md:justify-start"
+      data-aos="fade-up"
+      data-aos-trigger="#heroSideText"
+    >
+      {text}
+    </div>
+    <!-- centered text -->
+    <div
+      class="absolute bottom-0 top-0 flex w-full items-center justify-center md:justify-start"
+      data-aos="fade-up"
+      data-aos-trigger="#heroSideText"
+      data-aos-delay=".2"
+    >
+      <div class="my-auto font-bold opacity-60">
+        {text}
+      </div>
+    </div>
+    <!-- bottom text -->
+    <div
+      class="absolute bottom-0 flex w-full flex-nowrap justify-center font-bold opacity-20 md:justify-start"
+      data-aos="fade-up"
+      data-aos-trigger="#heroSideText"
+      data-aos-delay=".4"
+    >
+      {text}
+    </div>
+  </div>
+
+  <!-- Hero text -->
+  <div
+    class="mx-auto flex max-w-lg flex-col items-center text-center md:max-w-none md:items-start md:text-start"
+    data-aos="fade-in"
+    data-aos-trigger="#heroSideText"
+    data-aos-delay="1"
+  >
+    <h1 class="text-2xl font-bold uppercase lg:text-3xl">
+      The Greatest Blog Theme
+    </h1>
+    <p class="mt-6 font-medium opacity-80 sm:text-lg lg:text-xl">
+      My content is out of this world. Get the best web design tips twice a week
+      for free.
+    </p>
+    <NewsletterForm name="hero-newsletter" class="mt-4 w-full max-w-[400px]" />
+  </div>
+</section>

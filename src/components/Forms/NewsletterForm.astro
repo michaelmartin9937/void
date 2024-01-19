@@ -1,0 +1,43 @@
+---
+// components
+import Button from "@components/Button/Button.astro";
+
+interface Props {
+  name: string; // name for your form, like "hero-newsletter". It is used for the various id's
+  class?: string; // classes for the form
+  rest?: any; // catch-all for any additional parameters, such as "aria-label"
+}
+
+const { name, class: classList, ...rest } = Astro.props as Props;
+---
+
+<form
+  id={`${name}-form`}
+  name={`${name}-form`}
+  class:list={[
+    "flex justify-between gap-2 rounded-full border border-base-300 bg-base-100/50 p-1 backdrop-blur dark:border-base-800 dark:bg-base-900/50",
+    classList,
+  ]}
+  {...rest}
+>
+  <label for={`${name}-email`} class="description sr-only mb-1 text-base-100"
+    >*Email</label
+  >
+  <input
+    type="email"
+    class="newsletter__input--focus w-full rounded-full border-none bg-transparent pl-4 transition"
+    name="email"
+    id={`${name}-email`}
+    inputmode="email"
+    placeholder="Email"
+    required
+  />
+  <Button variant="primary" type="submit">Subscribe</Button>
+</form>
+
+<style lang="scss">
+  .newsletter__input--focus {
+    @apply focus:border-primary-600 focus:bg-base-100 focus:ring-offset-base-100 focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2;
+    @apply dark:focus:bg-base-900 dark:focus:ring-offset-base-900;
+  }
+</style>

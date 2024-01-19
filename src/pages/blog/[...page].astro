@@ -1,0 +1,47 @@
+---
+import { type Page } from "astro";
+
+// layout
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+// components
+import PostCard from "@components/PostCard/PostCard.astro";
+import Pagination from "@components/Pagination/Pagination.astro";
+import CategoryCloud from "@components/CategoryCloud/CategoryCloud.astro";
+
+// utils
+import { getAllPosts } from "@js/blogUtils";
+
+export async function getStaticPaths({ paginate }) {
+  const posts = await getAllPosts();
+
+  return paginate(posts, {
+    pageSize: 2,
+  });
+}
+
+const { page } = Astro.props as { page: Page };
+---
+
+<BaseLayout
+  title="Recent Blog Posts"
+  description="Recent Blog Posts Description"
+>
+  <div class="container pt-36 md:pt-44">
+    <h1 class="h1">Recent Posts</h1>
+    <div class="mt-10 grid gap-x-4 gap-y-20 md:grid-cols-2">
+      {page.data.map((post) => <PostCard post={post} showDescription={true} />)}
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-10 flex justify-center">
+      <Pagination
+        basePath={`/blog/`}
+        prevUrl={page.url.prev}
+        currPage={page.currentPage}
+        nextUrl={page.url.next}
+        lastPage={page.lastPage}
+      />
+    </div>
+  </div>
+</BaseLayout>

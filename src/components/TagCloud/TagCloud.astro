@@ -1,0 +1,32 @@
+---
+// utils
+import { getAllPosts, countItems, sortByValue } from "@js/blogUtils";
+import { tagify } from "@js/textUtils";
+
+const posts = await getAllPosts();
+
+const allTags = posts.map((post) => post.data.tags).flat();
+
+const countedTags = countItems(allTags);
+
+const processedTags = sortByValue(countedTags);
+
+interface Props {
+  showCount?: boolean;
+}
+
+const { showCount = false } = Astro.props as Props;
+---
+
+<div class="flex flex-wrap gap-1">
+  {
+    processedTags.map(([tag, count]) => (
+      <a href={`/tags/${tag}/`} class="button button--ghost px-3 py-1">
+        #{tagify(tag)}
+        {showCount && (
+          <span class="text-xs opacity-80 dark:opacity-70">({count})</span>
+        )}
+      </a>
+    ))
+  }
+</div>

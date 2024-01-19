@@ -1,0 +1,17 @@
+---
+import { slugify, tagify } from "@js/textUtils";
+
+interface Props {
+  tag: string;
+  class?: string;
+}
+
+const { tag, class: className } = Astro.props as Props;
+---
+
+<a
+  href={`/tags/${slugify(tag)}/`}
+  class={`inline-block hover:underline ${className}`}
+>
+  #{tagify(tag)}
+</a>

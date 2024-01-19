@@ -1,0 +1,59 @@
+---
+/**
+ * * Hero with text on left and image on right
+ */
+import { Image } from "astro:assets";
+
+// components
+import NewsletterForm from "@components/Forms/NewsletterForm.astro";
+
+import heroImage from "@assets/images/void-bg-square.png";
+---
+
+<section
+  id="heroSideImage"
+  class="container mb-14 grid min-h-[60svh] items-center gap-4 pb-16 pt-36 md:grid-cols-2 md:pb-20 md:pt-44"
+>
+  <!-- Hero text -->
+  <div
+    class="mx-auto flex max-w-lg flex-col items-center text-center md:max-w-none md:items-start md:text-start"
+  >
+    <h1
+      class="bg-gradient-to-r from-base-950 to-base-950/40 bg-clip-text text-5xl font-bold text-transparent xs:text-7xl lg:text-8xl dark:from-base-50 dark:to-base-50/20"
+      data-aos="fade-up"
+      data-aos-trigger="#heroSideImage"
+    >
+      THE VOID
+    </h1>
+    <p
+      class="mt-8 text-pretty font-medium opacity-80 xs:text-lg lg:text-xl"
+      data-aos="fade-up"
+      data-aos-trigger="#heroSideImage"
+    >
+      My content is out of this world. Get the best web design tips twice a week
+      for free.
+    </p>
+    <NewsletterForm
+      name="hero-newsletter"
+      class="mt-4 w-full max-w-[400px]"
+      data-aos="fade-up"
+      data-aos-trigger="#heroSideImage"
+      data-aos-delay=".8"
+      data-aos-duration="1"
+    />
+  </div>
+
+  <!-- hero image -->
+  <div class="hidden md:block">
+    <Image
+      src={heroImage}
+      class="aspect-square w-full"
+      alt="a void"
+      loading="eager"
+      width={600}
+      data-aos="fade-in"
+      data-aos-trigger="#heroSideImage"
+      data-aos-delay=".25"
+    />
+  </div>
+</section>

@@ -1,0 +1,28 @@
+---
+import { type CollectionEntry } from "astro:content";
+
+// components
+import PostCard from "@components/PostCard/PostCard.astro";
+
+// utils
+import { getAllPosts, arePostsRelated } from "@js/blogUtils";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+  postLimit?: number; // number of related posts to show
+}
+
+const { post, postLimit = 2 } = Astro.props;
+
+const allPosts = await getAllPosts();
+
+const relatedPosts = allPosts
+  .filter((otherPost) => arePostsRelated(post, otherPost))
+  .slice(0, postLimit);
+---
+
+{
+  relatedPosts.map((post, idx) => (
+    <PostCard post={post} showDescription={false} />
+  ))
+}

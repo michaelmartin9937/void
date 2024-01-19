@@ -1,0 +1,71 @@
+---
+/**
+ * * Hero with background image
+ * You'll want a mobile image, and a desktop image for this.
+ */
+import { Image } from "astro:assets";
+
+// components
+import NewsletterForm from "@components/Forms/NewsletterForm.astro";
+
+// images
+import heroImage from "@assets/images/void-bg-2.png";
+import heroImageMobile from "@assets/images/void-bg-2-square.png";
+---
+
+<section id="heroBgImage" class="md:pb-22 dark relative mb-14 flex">
+  <!-- background image -->
+  <div class="absolute -z-20 h-full w-full overflow-hidden">
+    <div class="relative h-full w-full bg-black">
+      <!-- adjustments for dark and light mode -->
+      <div class="absolute h-full w-full bg-black opacity-30"></div>
+      <Image
+        src={heroImage}
+        class="mx-auto hidden h-full w-auto object-cover sm:block"
+        alt="the void"
+        aria-hidden="true"
+        loading="eager"
+        height={1000}
+      />
+      <Image
+        src={heroImageMobile}
+        class="h-full w-auto object-cover sm:hidden"
+        alt="smiling family"
+        aria-hidden="true"
+        loading="eager"
+        width={1000}
+      />
+    </div>
+  </div>
+
+  <!-- another gradient filter so text has even light bg -->
+  <div class="absolute -z-10 h-full w-full"></div>
+
+  <!-- hero items -->
+  <div class="container flex gap-10 pb-40 pt-48 sm:pb-64 sm:pt-64">
+    <!-- Hero text -->
+    <div class="mx-auto text-center">
+      <h1
+        class="bg-gradient-to-b from-base-50 to-transparent to-90% bg-clip-text text-6xl font-bold text-transparent xs:text-7xl sm:text-[8rem]"
+        data-aos="fade-down"
+        data-aos-trigger="#heroBgImage"
+      >
+        THE VOID
+      </h1>
+      <p
+        class="mt-40 font-medium text-base-50 opacity-80 sm:mt-56 sm:text-xl"
+        data-aos="fade-up"
+        data-aos-trigger="#heroBgImage"
+      >
+        The sleek blog template crafted with Astro and Tailwind CSS
+      </p>
+      <NewsletterForm
+        name="hero-newsletter"
+        class="mx-auto mt-4 max-w-[400px]"
+        data-aos="fade-up"
+        data-aos-trigger="#heroBgImage"
+        data-aos-delay=".6"
+      />
+    </div>
+  </div>
+</section>

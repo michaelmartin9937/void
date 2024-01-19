@@ -1,0 +1,72 @@
+---
+// components
+import FooterLink from "@components/Footer/FooterLink.astro";
+import SiteLogo from "@components/SiteLogo/SiteLogo.astro";
+import NewsletterForm from "@components/Forms/NewsletterForm.astro";
+
+// data
+import siteData from "@config/siteData.json";
+
+const today = new Date();
+---
+
+<div class="mt-20 border-t border-t-base-300 dark:border-t-base-600/60">
+  <footer class="container m-auto w-full pb-6">
+    <div
+      class="flex w-full flex-col justify-between gap-4 sm:flex-row sm:gap-10"
+    >
+      <div class="mt-6 flex flex-col items-start gap-2">
+        <SiteLogo />
+        <p>Sign up for our newsletter</p>
+        <NewsletterForm name="footer-newsletter" class="mt-1" />
+      </div>
+      <div class="grid grid-cols-2 gap-4 md:grid-cols-3">
+        <!-- Navigation -->
+        <div class="flex flex-col">
+          <h3 class="mb-2 mt-6 text-lg font-medium">Navigation</h3>
+          <FooterLink href="/overview/">Overview</FooterLink>
+          <FooterLink href="/blog/">Blog</FooterLink>
+          <FooterLink href="/categories/">Categories</FooterLink>
+          <FooterLink href="/tags/">Tags</FooterLink>
+          <FooterLink href="/contact/">Contact</FooterLink>
+        </div>
+
+        <!-- Legal -->
+        <div class="flex flex-col">
+          <h3 class="mb-2 mt-6 text-lg font-medium">Legal</h3>
+          <FooterLink href="https://cosmicthemes.com/license/" newTab={true}>
+            License
+          </FooterLink>
+          <FooterLink href="https://cosmicthemes.com/refund/" newTab={true}>
+            Refund policy
+          </FooterLink>
+          <FooterLink href="https://cosmicthemes.com/terms/" newTab={true}>
+            Terms of use
+          </FooterLink>
+          <FooterLink href="https://cosmicthemes.com/privacy/" newTab={true}>
+            Privacy policy
+          </FooterLink>
+          <FooterLink href="https://cosmicthemes.com/support/" newTab={true}>
+            Support
+          </FooterLink>
+        </div>
+
+        <!-- In the Know -->
+        <div class="flex flex-col">
+          <h3 class="mb-2 mt-6 text-lg font-medium">In the Know</h3>
+          <FooterLink href="https://twitter.com/BowTiedWebReapr" newTab={true}>
+            @BowTiedWebReapr
+          </FooterLink>
+          <FooterLink href="https://twitter.com/Cosmic_Themes" newTab={true}>
+            @Cosmic_Themes
+          </FooterLink>
+        </div>
+      </div>
+    </div>
+    <hr class="my-6 border-base-300 dark:border-base-600/60" />
+    <div class="text-sm text-base-100/60">
+      &copy; {today.getFullYear()}
+      {" "}{siteData.name}. All rights reserved.
+    </div>
+  </footer>
+</div>

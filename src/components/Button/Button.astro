@@ -1,0 +1,114 @@
+---
+import Icon from "astro-icon";
+
+/**
+ *  * Notes:
+ *  if this is to be a link (<a>), pass an "href" prop
+ *  if this is to be a button (<button>), pass a "type" prop
+ *  you can pass the arrow prop with "left" or "right" to add an arrow to any button variant
+ */
+interface Props {
+  type?: "button" | "submit" | "reset" | null | undefined;
+  variant?: "primary" | "secondary" | "outline" | "ghost";
+  href?: string; // the href to go to, ex "/posts/"
+  arrow?: "left" | "right" | "none";
+  onclick?: any; // any onclick events
+  class?: string; // any additional classes
+  rest?: any; // catch-all for any additional parameters, such as "aria-label"
+}
+
+const {
+  type,
+  variant = "primary",
+  href,
+  arrow = "none",
+  onclick,
+  class: classList,
+  ...rest
+} = Astro.props as Props;
+---
+
+<!-- normal link -->{
+  href && (
+    <a
+      class:list={[
+        classList,
+        `button group`,
+        {
+          "button--primary": variant === "primary",
+        },
+        {
+          "button--secondary": variant === "secondary",
+        },
+        {
+          "button--outline": variant === "outline",
+        },
+        {
+          "button--ghost": variant === "ghost",
+        },
+      ]}
+      href={href}
+      onclick={onclick}
+      {...rest}
+    >
+      {arrow === "left" && (
+        <Icon
+          name="tabler:chevron-left"
+          class="h-4 w-4 transition-[transform] group-hover:-translate-x-1"
+          aria-hidden="true"
+        />
+      )}
+      <slot />
+      {arrow === "right" && (
+        <Icon
+          name="tabler:chevron-right"
+          class="h-4 w-4 transition-[transform] group-hover:translate-x-1"
+          aria-hidden="true"
+        />
+      )}
+    </a>
+  )
+}
+
+<!-- button for "submit" or other -->
+{
+  !href && (
+    <button
+      class:list={[
+        classList,
+        `button group`,
+        {
+          "button--primary": variant === "primary",
+        },
+        {
+          "button--secondary": variant === "secondary",
+        },
+        {
+          "button--outline": variant === "outline",
+        },
+        {
+          "button--ghost": variant === "ghost",
+        },
+      ]}
+      type={type}
+      onclick={onclick}
+      {...rest}
+    >
+      {arrow === "left" && (
+        <Icon
+          name="tabler:chevron-left"
+          class="h-4 w-4 transition-[transform] group-hover:-translate-x-1"
+          aria-hidden="true"
+        />
+      )}
+      <slot />
+      {arrow === "right" && (
+        <Icon
+          name="tabler:chevron-right"
+          class="h-4 w-4 transition-[transform] group-hover:translate-x-1"
+          aria-hidden="true"
+        />
+      )}
+    </button>
+  )
+}

@@ -1,0 +1,296 @@
+---
+import Icon from "astro-icon";
+
+interface Props {
+  title: string;
+  url: URL; // full URL, including "https://" Easiest way is in BlogLayout.astro `const url = Astro.url.toString();``
+  x?: boolean;
+  facebook?: boolean;
+  linkedin?: boolean;
+  pinterest?: boolean;
+  whatsapp?: boolean;
+  email?: boolean; // include email button
+  link?: boolean; // include a copy link button
+  linktext?: string; // where possible, includes this text in the share link when a user clicks the button (ex. Twitter)
+  class?: string;
+  rest?: any; // catch-all for any additional parameters, note:aria-label is already implemented
+}
+
+const {
+  x = true,
+  facebook = true,
+  linkedin = true,
+  pinterest = false,
+  whatsapp = false,
+  email = false,
+  link = false,
+  url,
+  title,
+  linktext = "Check out this great post!",
+  class: className,
+  ...rest
+} = Astro.props as Props;
+
+let validtext = linktext.replace(/ /g, "%20");
+const svgStyle = "w-6 h-6 text-inherit";
+---
+
+{
+  x && (
+    <a
+      class={`share-button bg-[#000] hover:bg-[#000]/80 ${className}`}
+      href={`https://twitter.com/intent/tweet?url=${url}&text=${validtext}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Share on Twitter"
+      {...rest}
+    >
+      <div class="sr-only">share on x</div>
+      <Icon name="tabler-brand-x" class={svgStyle} aria-hidden="true" />
+    </a>
+  )
+}
+{
+  facebook && (
+    <a
+      class={`share-button bg-[hsl(244,33%,43%)] hover:bg-[hsl(244,33%,33%)] ${className}`}
+      href={`https://www.facebook.com/sharer/sharer.php?u=${url}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Share on Facebook"
+      {...rest}
+    >
+      <div class="sr-only">share on facebook</div>
+      <Icon name="ri:facebook-fill" class={svgStyle} aria-hidden="true" />
+    </a>
+  )
+}
+{
+  linkedin && (
+    <a
+      class={`share-button bg-[hsl(201,100%,35%)] hover:bg-[hsl(201,100%,25%)] ${className}`}
+      href={`https://www.linkedin.com/shareArticle?mini=true&url=${url}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Share on Linkedin"
+      {...rest}
+    >
+      <div class="sr-only">share on linkedin</div>
+      <Icon name="ri:linkedin-fill" class={svgStyle} aria-hidden="true" />
+    </a>
+  )
+}
+{
+  pinterest && (
+    <a
+      class={`share-button bg-[hsl(0,100%,43%)] hover:bg-[hsl(0,100%,33%)] ${className}`}
+      href={`https://pinterest.com/pin/create/button/?url=${url}&media=&description=${validtext}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Share on Pinterest"
+      {...rest}
+    >
+      <div class="sr-only">share on pinterest</div>
+      <Icon name="ri:pinterest-fill" class={svgStyle} aria-hidden="true" />
+    </a>
+  )
+}
+{
+  whatsapp && (
+    <a
+      class={`share-button bg-[hsl(142,70%,49%)] hover:bg-[hsl(142,70%,39%)] ${className}`}
+      href={`https://wa.me/?text=${validtext} ${url}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Share on Whatsapp"
+      {...rest}
+    >
+      <div class="sr-only">share on whatsapp</div>
+      <Icon name="ri:whatsapp-line" class={svgStyle} aria-hidden="true" />
+    </a>
+  )
+}
+{
+  email && (
+    <a
+      class={`share-button bg-[hsl(220,1%,43%)] hover:bg-[hsl(220,1%,33%)] ${className}`}
+      href={`mailto:?subject=${validtext} "${title}"&body=${url}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Share through email"
+      {...rest}
+    >
+      <div class="sr-only">share by email</div>
+      <Icon name="tabler-mail" class={svgStyle} aria-hidden="true" />
+    </a>
+  )
+}
+{
+  link && (
+    <button
+      class={`share-button copy-link-button group relative bg-gray-600 hover:bg-gray-700 ${className}`}
+      aria-label="Copy link to post"
+      {...rest}
+    >
+      <span class="tooltip-text group-hover:visible group-hover:opacity-100">
+        copy link
+      </span>
+      <div class="share-button-svg">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          class={svgStyle}
+        >
+          <path
+            fill="currentColor"
+            d="M11 17H7q-2.075 0-3.538-1.463T2 12q0-2.075 1.463-3.538T7 7h4v2H7q-1.25 0-2.125.875T4 12q0 1.25.875 2.125T7 15h4v2Zm-3-4v-2h8v2H8Zm5 4v-2h4q1.25 0 2.125-.875T20 12q0-1.25-.875-2.125T17 9h-4V7h4q2.075 0 3.538 1.463T22 12q0 2.075-1.463 3.538T17 17h-4Z"
+          />
+        </svg>
+      </div>
+    </button>
+    // </div>
+  )
+}
+
+<style lang="scss">
+  /* share buttons on blog posts */
+  .share-button {
+    @apply flex justify-center p-1 transition md:p-2;
+  }
+
+  /* tooltip */
+  .tooltip-text {
+    @apply invisible absolute bottom-full mb-[6px] whitespace-nowrap rounded-md bg-gray-700 px-2 py-1 text-center text-sm text-base-50 opacity-0 transition duration-300;
+  }
+
+  /* tooltip arrow */
+  .tooltip-text::after {
+    @apply absolute left-2/4 top-full -ml-1 border-4 border-solid border-transparent border-t-gray-700 content-[""];
+  }
+</style>
+
+<script>
+  const successSvg = `
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    class="text-success"
+    aria-hidden="true"
+  >
+    <g
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <>
+        <g stroke-width="2">
+          <>
+            <path
+              stroke-dasharray="66"
+              stroke-dashoffset="66"
+              d="M12 3H19V21H5V3H12Z"
+            >
+              <animate
+                fill="freeze"
+                attributeName="stroke-dashoffset"
+                dur="0.6s"
+                values="66;0"
+              />
+            </path>
+            <path
+              stroke-dasharray="10"
+              stroke-dashoffset="10"
+              d="M9 13L11 15L15 11"
+            >
+              <animate
+                fill="freeze"
+                attributeName="stroke-dashoffset"
+                begin="1s"
+                dur="0.2s"
+                values="10;0"
+              />
+            </path>
+          </>
+        </g>
+        <path
+          stroke-dasharray="12"
+          stroke-dashoffset="12"
+          d="M14.5 3.5V6.5H9.5V3.5"
+        >
+          <animate
+            fill="freeze"
+            attributeName="stroke-dashoffset"
+            begin="0.7s"
+            dur="0.2s"
+            values="12;0"
+          />
+        </path>
+      </>
+    </g>
+  </svg>
+  `;
+
+  const linkSvg = `
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
+    <path
+      fill="currentColor"
+      d="M11 17H7q-2.075 0-3.538-1.463T2 12q0-2.075 1.463-3.538T7 7h4v2H7q-1.25 0-2.125.875T4 12q0 1.25.875 2.125T7 15h4v2Zm-3-4v-2h8v2H8Zm5 4v-2h4q1.25 0 2.125-.875T20 12q0-1.25-.875-2.125T17 9h-4V7h4q2.075 0 3.538 1.463T22 12q0 2.075-1.463 3.538T17 17h-4Z"
+    />
+  </svg>
+  `;
+
+  /*
+    Adds listeners for any copy link buttons to copy the link to your clipboard
+    and change the button to a success animation for a few seconds.
+  */
+  let copyLinkButtons: NodeListOf<Element>;
+
+  function initShareButtons() {
+    copyLinkButtons = document.querySelectorAll(".copy-link-button");
+
+    if (copyLinkButtons) {
+      copyLinkButtons.forEach((copyLinkButton) => {
+        copyLinkButton.addEventListener("click", () => {
+          // copy the link to the clipboard
+          navigator.clipboard.writeText(window.location.href);
+
+          // get the tooltip and svg elements
+          const copyLinkTooltip = copyLinkButton.querySelector(".tooltip-text");
+          const shareButtonSvg =
+            copyLinkButton.querySelector(".share-button-svg");
+
+          // change the tooltip and svg elements to show success
+          if (copyLinkTooltip && shareButtonSvg) {
+            copyLinkTooltip.classList.add("text-success");
+            copyLinkTooltip.textContent = "copied!";
+            shareButtonSvg.innerHTML = successSvg;
+
+            setTimeout(() => {
+              shareButtonSvg.innerHTML = linkSvg;
+              copyLinkTooltip.classList.remove("text-success");
+              copyLinkTooltip.textContent = "copy link";
+            }, 3000);
+          }
+        });
+      });
+    }
+  }
+
+  // runs on initial page load
+  initShareButtons();
+
+  // runs on view transitions navigation. Not needed if item has "transition:persist"
+  document.addEventListener("astro:after-swap", initShareButtons);
+</script>

@@ -1,0 +1,39 @@
+---
+// layout
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+// components
+import Hero from "@components/Hero/HeroSideText.astro";
+import Button from "@components/Button/Button.astro";
+import PostCard from "@components/PostCard/PostCardHorizontal.astro";
+
+// utils
+import { getAllPosts, formatPosts } from "@js/blogUtils";
+
+// data
+import siteData from "@config/siteData.json";
+
+const posts = await getAllPosts();
+const recentPosts = formatPosts(posts, { limit: 4 });
+---
+
+<BaseLayout title={siteData.title} description={siteData.description}>
+  <Hero />
+  <div class="container mt-10 md:mt-20">
+    <!-- Recent blogs -->
+    <h2 class="h2 hidden md:block">Recent Posts</h2>
+
+    <div class="mt-8 flex flex-col">
+      {
+        recentPosts.map((post, idx) => (
+          <PostCard post={post} showDescription={true} data-aos="fade-in" />
+        ))
+      }
+    </div>
+
+    <!-- link to all posts -->
+    <div class="mt-12 flex justify-center">
+      <Button variant="outline" arrow="right" href="/blog/">All Posts</Button>
+    </div>
+  </div>
+</BaseLayout>

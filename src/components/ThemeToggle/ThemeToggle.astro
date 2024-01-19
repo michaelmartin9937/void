@@ -1,0 +1,98 @@
+---
+import { Icon } from "astro-icon";
+---
+
+<button
+  id="theme-toggle"
+  class="primary-focus rounded-full p-2 transition-colors duration-300 hover:text-primary-600 dark:hover:text-primary-400"
+  aria-label="color theme toggle"
+>
+  <!-- placeholder -->
+  <div id="theme-toggle__placeholder" class="h-6 w-6"></div>
+  <Icon
+    id="theme-toggle__dark-icon"
+    name="tabler:moon-stars"
+    class="hidden h-6 w-6"
+  />
+  <Icon
+    id="theme-toggle__light-icon"
+    name="tabler:sun"
+    class="hidden h-6 w-6"
+  />
+</button>
+
+<script>
+  function changeTheme(theme: "dark" | "light") {
+    // change theme with no transitions to make it instant
+    const css = document.createElement("style");
+    css.appendChild(
+      document.createTextNode(
+        `* {
+          -webkit-transition: none !important;
+          -moz-transition: none !important;
+          -o-transition: none !important;
+          -ms-transition: none !important;
+          transition: none !important;
+        }`,
+      ),
+    );
+    document.head.appendChild(css);
+
+    // change theme
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+    // re-enable transitions after the theme has changed
+    // Calling getComputedStyle forces the browser to redraw
+    window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
+  }
+
+  function initThemeToggle() {
+    const themeToggleLoader = document.querySelector(
+      "#theme-toggle__placeholder",
+    );
+    const themeToggleDarkIcon = document.querySelector(
+      "#theme-toggle__dark-icon",
+    );
+    const themeToggleLightIcon = document.querySelector(
+      "#theme-toggle__light-icon",
+    );
+    const themeToggleBtn = document.querySelector("#theme-toggle");
+
+    let colorTheme = localStorage.getItem("colorTheme");
+    // There will always be a color theme as it is assigned in BaseHead.astro
+    // So here just assign the appropriate icon
+    if (colorTheme === "dark") {
+      themeToggleLoader?.classList.add("hidden");
+      themeToggleDarkIcon?.classList.remove("hidden");
+    } else if (colorTheme === "light") {
+      themeToggleLoader?.classList.add("hidden");
+      themeToggleLightIcon?.classList.remove("hidden");
+    }
+
+    themeToggleBtn?.addEventListener("click", function () {
+      // toggle icons inside button
+      themeToggleDarkIcon?.classList.toggle("hidden");
+      themeToggleLightIcon?.classList.toggle("hidden");
+
+      // update local storage
+      if (localStorage.getItem("colorTheme") === "light") {
+        changeTheme("dark");
+        localStorage.setItem("colorTheme", "dark");
+      } else {
+        changeTheme("light");
+        localStorage.setItem("colorTheme", "light");
+      }
+    });
+  }
+
+  // runs on initial page load
+  initThemeToggle();
+
+  // runs on view transitions navigation
+  document.addEventListener("astro:after-swap", initThemeToggle);
+</script>

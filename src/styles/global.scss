@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* https://tailwindcss.com/docs/adding-custom-styles#using-css-and-layer */
+@layer base {
+  :root {
+    // custom shiki styling for markdown code blocks
+    // Shiki Themes: https://github.com/shikijs/shiki/blob/main/docs/themes.md
+    --astro-code-color-text: #ffffff;
+    --astro-code-color-background: #202022;
+    --astro-code-token-constant: #c4b5fd; // recommend making this a slightly off color from your primary-300 color
+    --astro-code-token-string: #624fb0; // I don't see this ever used, but it's here if you need it
+    --astro-code-token-comment: #a1a1aad0;
+    --astro-code-token-keyword: #d4d4d8d0;
+    --astro-code-token-parameter: #47a7eb; // I don't see this ever used, but it's here if you need it
+    --astro-code-token-function: #ffffff;
+    --astro-code-token-string-expression: #a5b4fc; // recommend making this your primary-300 color
+    --astro-code-token-punctuation: #d4d4d8d0;
+    --astro-code-token-link: #ffffff;
+  }
+
+  html {
+    @apply text-base leading-[1.6rem];
+    scroll-behavior: smooth;
+  }
+
+  ::-webkit-scrollbar {
+    @apply h-1 w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-inherit;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-base-400 bg-opacity-90;
+  }
+}
+
+/*  things in the components layer can be overriden with utility classes. 
+    Useful for custom styles on third-party components, and things like 
+    btn, card, badge, etc  */
+@layer components {
+  @import "buttons";
+  @import "prose";
+
+  .h1 {
+    @apply text-3xl font-medium md:text-4xl lg:text-5xl;
+  }
+
+  .h2 {
+    @apply text-2xl font-medium md:text-3xl;
+  }
+
+  .h3 {
+    @apply text-lg font-medium md:text-xl;
+  }
+
+  .description {
+    @apply opacity-90 sm:text-xl dark:opacity-80;
+  }
+
+  .container {
+    @apply mx-auto max-w-[70rem] px-4;
+  }
+}
+
+@layer utilities {
+  /* focus utility class (for when user is tabbing through items on page) */
+  .primary-focus {
+    @apply focus:outline-none focus-visible:rounded-sm focus-visible:outline-primary-600 dark:focus-visible:outline-primary-400;
+  }
+
+  /* hover underline effect left-to-right
+     use "group" class on a parent element, and "underline-ltr" on the element */
+  .underline-ltr {
+    @apply bg-gradient-to-r from-primary-600 to-primary-600 bg-[length:0%_2px] bg-left-bottom bg-no-repeat transition-[background-size] duration-300 group-hover:bg-[length:100%_2px] dark:from-primary-400 dark:to-primary-400;
+  }
+
+  /* fix for safari issues related to blurry gradients */
+  .safari-fix {
+    transform: translate3d(0, 0, 0);
+  }
+
+  /* start animated items invisible. Once animation has loaded, "aos-animate" class is added to make them visible for the animation to play */
+  .use-animations [data-aos] {
+    @apply invisible;
+
+    &.aos-animate {
+      @apply visible;
+    }
+  }
+}

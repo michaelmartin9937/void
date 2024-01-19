@@ -1,0 +1,142 @@
+---
+// components
+import Button from "@components/Button/Button.astro";
+
+interface Props {
+  basePath: string;
+  prevUrl: string | undefined;
+  currPage: number;
+  nextUrl: string | undefined;
+  lastPage: number;
+}
+
+const { prevUrl, currPage, nextUrl, lastPage, basePath } = Astro.props as Props;
+
+function generatePageNumbers(currPage: number, lastPage: number) {
+  let startPage = Math.max(1, currPage - 2);
+  let endPage = Math.min(lastPage, startPage + 4);
+
+  if (endPage - startPage < 4) {
+    startPage = Math.max(1, endPage - 4);
+  }
+
+  const pageNumbers = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, i) => startPage + i,
+  );
+
+  if (startPage > 1) {
+    if (startPage > 2) {
+      pageNumbers.unshift(-1);
+    }
+    pageNumbers.unshift(1);
+  }
+
+  if (endPage < lastPage) {
+    if (endPage < lastPage - 1) {
+      pageNumbers.push(-1);
+    }
+    pageNumbers.push(lastPage);
+  }
+
+  return pageNumbers;
+}
+
+const pageNumbers = generatePageNumbers(currPage, lastPage);
+// const testPageNumbers = generatePageNumbers(5, 10);
+---
+
+{
+  (prevUrl || nextUrl) && (
+    <nav aria-label="Blog pages navigation" class="w-full">
+      <div class="flex w-full items-center justify-between py-3 md:py-4">
+        <div class="flex">
+          {prevUrl && (
+            <Button variant="outline" arrow="left" href={prevUrl}>
+              Prev
+            </Button>
+          )}
+          {!prevUrl && (
+            <Button
+              variant="outline"
+              arrow="left"
+              href={prevUrl}
+              class="opacity-50"
+              disabled
+            >
+              Prev
+            </Button>
+          )}
+        </div>
+
+        <div class="flex justify-center gap-1 text-center">
+          {pageNumbers.map((pageNumber) => {
+            if (pageNumber === -1) {
+              return (
+                <div class="hidden rounded-full p-2 font-medium md:block">
+                  <div class="flex h-6 w-6 items-center justify-center">
+                    ...
+                  </div>
+                </div>
+              );
+            }
+
+            if (pageNumber === currPage) {
+              return (
+                <div class="rounded-full bg-base-200/50 p-2 font-medium dark:bg-base-800/50">
+                  <div class="flex h-6 w-6 items-center justify-center">
+                    {pageNumber.toString()}
+                  </div>
+                </div>
+              );
+            }
+
+            if (pageNumber === 1) {
+              return (
+                <a
+                  href={`${basePath}`}
+                  class="hidden rounded-full p-2 font-medium transition hover:bg-base-200/50 md:block dark:hover:bg-base-800/50"
+                >
+                  <div class="flex h-6 w-6 items-center justify-center">
+                    {pageNumber.toString()}
+                  </div>
+                </a>
+              );
+            }
+
+            return (
+              <a
+                href={`${basePath}${pageNumber}/`}
+                class="hidden rounded-full p-2 font-medium transition hover:bg-base-200/50 md:block dark:hover:bg-base-800/50"
+              >
+                <div class="flex h-6 w-6 items-center justify-center">
+                  {pageNumber.toString()}
+                </div>
+              </a>
+            );
+          }, [])}
+        </div>
+
+        <div class="flex justify-end">
+          {nextUrl && (
+            <Button variant="outline" arrow="right" href={nextUrl}>
+              Next
+            </Button>
+          )}
+
+          {!nextUrl && (
+            <Button
+              variant="outline"
+              arrow="right"
+              href={nextUrl}
+              class="opacity-50"
+              disabled
+            >
+              Next
+            </Button>
+          )}
+        </div>
+      </div>
+    </nav>
+  )
+}

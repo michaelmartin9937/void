@@ -1,0 +1,151 @@
+---
+// main layout
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+// components
+import Button from "@components/Button/Button.astro";
+---
+
+<BaseLayout
+  title="Recent Blog Posts"
+  description="Recent Blog Posts Description"
+>
+  <div class="mx-auto max-w-3xl px-4 pt-36 md:pt-44">
+    <h1 class="h1">Overview</h1>
+    <p class="description mt-2">The various pages of The Void</p>
+    <div class="mx-auto mt-10 grid gap-4 xs:grid-cols-2 md:grid-cols-3">
+      <!-- Blog pages -->
+      <div class="flex flex-col">
+        <h3 class="overview__heading">Blog</h3>
+        <a class="overview__link" href="/blog/">Blog Index 1</a>
+        <a class="overview__link" href="/examples/blogindex2/">Blog Index 2</a>
+        <a class="overview__link" href="/blog/tsconfig-paths-setup/"
+          >Blog Post 1</a
+        >
+        <a class="overview__link" href="/examples/blog2/">Blog Post 2</a>
+        <a class="overview__link" href="/examples/blog3/">Blog Post 3</a>
+      </div>
+
+      <!-- Landing pages -->
+      <div class="flex flex-col">
+        <h3 class="overview__heading">Landing Pages</h3>
+        <a class="overview__link" href="/">Landing 1</a>
+        <a class="overview__link" href="/examples/landing2/">Landing 2</a>
+        <a class="overview__link" href="/examples/landing3/">Landing 3</a>
+      </div>
+
+      <!-- Blog Post Cards -->
+      <div class="flex flex-col">
+        <h3 class="overview__heading">Blog Post Cards</h3>
+        <a class="overview__link" href="/">Post Cards 1</a>
+        <a class="overview__link" href="/examples/landing2/">Post Cards 2</a>
+      </div>
+
+      <!-- Elements and Forms -->
+      <div class="flex flex-col">
+        <h3 class="overview__heading">Elements and Forms</h3>
+        <a class="overview__link" href="/elements/">MDX Pages</a>
+        <a class="overview__link" href="/contact/">Contact</a>
+      </div>
+
+      <!-- Widgets -->
+      <div class="flex flex-col">
+        <h3 class="overview__heading">Widgets</h3>
+        <!-- CookieConsent component should be used in BaseLayout.astro if desired -->
+        <button id="test-consent-demo-btn" class="overview__link text-left"
+          >Cookie Consent</button
+        >
+      </div>
+
+      <!-- Other -->
+      <div class="flex flex-col">
+        <h3 class="overview__heading">Other Pages</h3>
+        <a class="overview__link" href="/categories/">Categories</a>
+        <a class="overview__link" href="/tags/">Tags</a>
+        <a class="overview__link" href="/privacy-policy/">Privacy Policy</a>
+        <a class="overview__link" href="/not-a-link/">404</a>
+        <a
+          class="overview__link"
+          href="/rss.xml"
+          target="_blank"
+          rel="noopener noreferrer">RSS Feed</a
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- CookieConsent component should be used in BaseLayout.astro if desired -->
+  <div
+    id="test-banner"
+    class="fixed inset-x-6 bottom-6 z-50 hidden justify-center"
+  >
+    <div
+      class="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 rounded-md border border-base-400/60 bg-base-100 p-4 shadow-md dark:border-base-600 dark:bg-base-800"
+    >
+      <div class="text-center">
+        <p class="text-sm lg:text-base">
+          We use cookies to improve your experience on this site. To learn more,
+          see our <a
+            href="/privacy-policy/"
+            class="underline transition hover:decoration-primary-600 dark:hover:decoration-primary-400"
+            >Privacy Policy</a
+          >.
+        </p>
+      </div>
+      <div class="z-50 mx-auto flex gap-2">
+        <Button variant="primary" type="button">Accept</Button>
+        <Button variant="ghost" type="button">Decline</Button>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style lang="scss">
+  .overview__heading {
+    @apply mb-2 mt-6 text-lg font-medium;
+  }
+  .overview__link {
+    @apply transition hover:text-primary-600 dark:hover:text-primary-400;
+  }
+</style>
+
+<script>
+  //Script purely for demo of the CookieConsent component. Use the actual <CookieConsent /> component in BaseLayout.astro if desired.
+  function cookieConsentSetup() {
+    const cookieBanner = document.getElementById("test-banner");
+    const acceptButton = document.querySelector(
+      "#test-banner button:first-of-type",
+    );
+    const declineButton = document.querySelector(
+      "#test-banner button:last-of-type",
+    );
+    const cookieConsentDemoBtn = document.getElementById(
+      "test-consent-demo-btn",
+    );
+
+    cookieConsentDemoBtn?.addEventListener("click", () => {
+      cookieBanner?.classList.toggle("hidden");
+      cookieBanner?.classList.toggle("flex");
+    });
+
+    // If the user clicks the accept button, hide the banner and set a cookie
+    acceptButton?.addEventListener("click", () => {
+      console.log("cookies accepted example");
+      cookieBanner?.classList.toggle("hidden");
+      cookieBanner?.classList.toggle("flex");
+    });
+
+    // If the user clicks the decline button, hide the banner and set a cookie
+    declineButton?.addEventListener("click", () => {
+      console.log("cookies declined example");
+      cookieBanner?.classList.toggle("hidden");
+      cookieBanner?.classList.toggle("flex");
+    });
+  }
+
+  // runs on initial page load
+  cookieConsentSetup();
+
+  // runs on view transitions navigation
+  document.addEventListener("astro:after-swap", cookieConsentSetup);
+</script>

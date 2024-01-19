@@ -1,0 +1,70 @@
+---
+// main layout
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+// components
+import PostCard from "@components/PostCard/PostCard.astro";
+import Pagination from "@components/Pagination/Pagination.astro";
+
+// utils
+import { getAllPosts, countItems } from "@js/blogUtils";
+import { tagify, slugify } from "@js/textUtils";
+
+// generate pagination for tag pages if there are a bunch of posts for a single tag
+export async function getStaticPaths({ paginate }) {
+  const posts = await getAllPosts();
+
+  // get all tags from the posts
+  const allTags = posts.map((post) => post.data.tags).flat();
+
+  // combine tags and count how many times they appear. these are "slugified"
+  const countedTags = countItems(allTags);
+
+  // pagination returns an array of objects with params and page size
+  return Object.entries(countedTags).flatMap(([tag, val]) => {
+    // get all posts that have the tag
+    const filteredPosts = posts.filter((post) => {
+      // make sure to slugify them for comparison
+      const slugifiedTags = post.data.tags.map((tag) => slugify(tag));
+      return slugifiedTags.includes(tag);
+    });
+
+    return paginate(filteredPosts, {
+      params: { tag: tag },
+      pageSize: 6,
+    });
+  });
+}
+
+const { page } = Astro.props as { page: any };
+const { tag } = Astro.params as { tag: string };
+
+const formattedTag = tagify(tag);
+---
+
+<BaseLayout
+  title={`${formattedTag.toLowerCase()} - Blog posts`}
+  description={`A collection of blog posts about ${formattedTag.toLowerCase()}`}
+>
+  <div class="container pt-36 md:pt-44">
+    <h1 class="h1">
+      Posts about <span class="text-primary-600 dark:text-primary-400"
+        >#{formattedTag.toLowerCase()}</span
+      >
+    </h1>
+    <div class="mt-10 grid gap-x-4 gap-y-20 md:grid-cols-2">
+      {page.data.map((post) => <PostCard post={post} showDescription={true} />)}
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-20 flex justify-center">
+      <Pagination
+        basePath={`/blog/tags/${tag}/`}
+        prevUrl={page.url.prev}
+        currPage={page.currentPage}
+        nextUrl={page.url.next}
+        lastPage={page.lastPage}
+      />
+    </div>
+  </div>
+</BaseLayout>
