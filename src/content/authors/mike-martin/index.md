@@ -1,6 +1,6 @@
 ---
 name: Mike Martin
-avatar: ./chad.jpg
+avatar: ./mike.jpg
 about: >-
   Busy being more beautiful that you can possibly dream of.
 email: michael.martin9937@gmail.com
