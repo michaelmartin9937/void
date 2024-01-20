@@ -1,8 +1,8 @@
 ---
-name: Chad Thunder
+name: Mike Martin
 avatar: ./chad.jpg
 about: >-
   Busy being more beautiful that you can possibly dream of.
-email: giga@chad.com
+email: michael.martin9937@gmail.com
 authorLink: https://webreaper.dev
 ---
